@@ -12,7 +12,7 @@ const APP_CONFIG = {
     DEFAULT_GENRE: "City Pop",
     DEFAULT_DURATION: 120,       
     MAX_SONGS_IN_VOTING: 6,      
-    HEARTBEAT_INTERVAL: 2000,    
+    HEARTBEAT_INTERVAL: 10000,    
     CHANNELS: {
         STATE: "music_party_state",
         ACTION: "music_party_actions"
