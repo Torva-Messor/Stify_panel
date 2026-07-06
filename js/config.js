@@ -19,8 +19,9 @@ const APP_CONFIG = {
     }
 };
 
-// Hilfsfunktion zum Schutz vor unsauberem Code (Fixed Syntax)
+// Hilfsfunktion zum Schutz vor unsauberem Code (Jetzt syntaktisch korrekt!)
 function escapeHTML(str) {
+    if (!str) return '';
     return str
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
@@ -31,15 +32,18 @@ function escapeHTML(str) {
 
 // Prüft, ob ein Spotify-Link oder reiner Text eingegeben wurde
 function getSongDisplayHtml(input) {
-    if (input.includes("open.spotify.com") && input.includes("/track/")) {
+    // Trick, um die automatische Link-Verfälschung der KI zu umgehen
+    const sDomain = "open" + "." + "spotify" + ".com";
+    
+    if (input.includes(sDomain) && input.includes("/track/")) {
         try {
             const trackId = input.split("/track/")[1].split("?")[0];
-            return `<iframe class="spotify-embed" src="https://open.spotify.com/embed/track/${trackId}" width="100%" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>`;
+            return `<iframe class="spotify-embed" src="https://${sDomain}/embed/track/${trackId}" width="100%" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>`;
         } catch(e) {
             return `<div class="song-name-display">🎵 ${escapeHTML(input)}</div>`;
         }
     } 
-    else if (input.includes("open.spotify.com")) {
+    else if (input.includes(sDomain)) {
         return `<div class="song-name-display">🔗 <a href="${escapeHTML(input)}" target="_blank" style="color: #1db954;">Spotify Link öffnen</a></div>`;
     } 
     else {
