@@ -13,15 +13,13 @@ const APP_CONFIG = {
     DEFAULT_DURATION: 120,       
     MAX_SONGS_IN_VOTING: 6,      
     HEARTBEAT_INTERVAL: 2000,    
-    
-    // PubNub Kanäle
     CHANNELS: {
         STATE: "music_party_state",
         ACTION: "music_party_actions"
     }
 };
 
-// Hilfsfunktion zum Schutz vor unsauberem Code bei der Texteingabe (Gefixt)
+// Hilfsfunktion zum Schutz vor unsauberem Code (Fixed Syntax)
 function escapeHTML(str) {
     return str
         .replace(/&/g, "&amp;")
@@ -33,42 +31,17 @@ function escapeHTML(str) {
 
 // Prüft, ob ein Spotify-Link oder reiner Text eingegeben wurde
 function getSongDisplayHtml(input) {
-    if (input.includes("spotify.com") && input.includes("/track/")) {
+    if (input.includes("open.spotify.com") && input.includes("/track/")) {
         try {
-            const trackId = input.split("/track/")[1].split("?")[0];
-            return `<iframe class="spotify-embed" src="https://open.spotify.com/embed/track/$${trackId}" width="100%" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>`;
-        } catch(e) {
-            return `<div class="song-name-display">🎵 ${escapeHTML(input)}</div>`;
-        }
-    } 
-    else if (input.includes("spotify.com")) {
-        return `<div class="song-name-display">🔗 <a href="${escapeHTML(input)}" target="_blank" style="color: #1db954;">Spotify Link öffnen</a></div>`;
-    } 
-    else {
-        return `<div class="song-name-display">🎤 ${escapeHTML(input)}</div>`;
-    }
-}
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-// Prüft, ob ein Spotify-Link oder reiner Text eingegeben wurde
-function getSongDisplayHtml(input) {
-    // Prüfen, ob es ein echter Spotify Track-Link ist
-    if (input.includes("spotify.com") && input.includes("/track/")) {
-        try {
-            // Extrahiert die Song-ID aus dem Link
             const trackId = input.split("/track/")[1].split("?")[0];
             return `<iframe class="spotify-embed" src="https://open.spotify.com/embed/track/${trackId}" width="100%" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>`;
         } catch(e) {
             return `<div class="song-name-display">🎵 ${escapeHTML(input)}</div>`;
         }
     } 
-    // Falls es ein anderer Spotify-Link (z.B. Playlist oder Album) ist
-    else if (input.includes("spotify.com")) {
+    else if (input.includes("open.spotify.com")) {
         return `<div class="song-name-display">🔗 <a href="${escapeHTML(input)}" target="_blank" style="color: #1db954;">Spotify Link öffnen</a></div>`;
     } 
-    // Wenn es einfach nur Text / ein reiner Liedname ist
     else {
         return `<div class="song-name-display">🎤 ${escapeHTML(input)}</div>`;
     }
