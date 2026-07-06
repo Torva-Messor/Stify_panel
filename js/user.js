@@ -5,7 +5,6 @@ let localTimerInterval = null;
 let currentRoundId = null;
 let isVotingDisabledCurrently = false;
 
-// Über globalen Kanal abonnieren
 pubnub.subscribe({ channels: [APP_CONFIG.CHANNELS.STATE] });
 
 pubnub.addListener({
@@ -16,19 +15,16 @@ pubnub.addListener({
 
             document.getElementById('genre-display').innerText = state.genre;
 
-            // MODUS-PRÜFUNG (Voting vs. Direkt-Modus)
             if (state.votingDisabled) {
-                // Ansicht für den Direkt-Modus (Wunschbox)
                 clearInterval(localTimerInterval);
-                document.getElementById('time-badge-container').innerHTML = "<span style='color: #00bcd4;'>🚀 Direkt-Modus aktiv!</span><br><small style='font-size:0.8rem; color:#aaa;'>Alle Songs gehen sofort an den DJ</small>";
+                document.getElementById('time-badge-container').innerHTML = "<span style='color: #00bcd4;'>🚀 Direkt-Modus aktiv!</span><br><small style='font-size:0.8rem; color:#aaa;'>Wünsche gehen sofort an den DJ</small>";
                 document.getElementById('list-title').innerText = "Warteschlange aktiv";
                 document.getElementById('submit-title').innerText = "Song direkt an den DJ senden";
-                document.getElementById('submit-btn').disabled = false; // Im Direktmodus darf man mehrfach wünschen
-                document.getElementById('voting-list').innerHTML = '<li style="justify-content: center; color: #888;">Schicke deine Songwünsche oben ab!</li>';
+                document.getElementById('submit-btn').disabled = false;
+                document.getElementById('voting-list').innerHTML = '<li style="justify-content: center; color: #888; text-align:center; padding: 15px;">Schicke deine Songwünsche oben ab!</li>';
             } else {
-                // Ansicht für das normale Voting
                 document.getElementById('list-title').innerText = `Aktuelle Auswahl (Max ${APP_CONFIG.MAX_SONGS_IN_VOTING})`;
-                document.getElementById('submit-title').innerText = "Song vorschlagen";
+                document.getElementById('submit-title').innerText = "Song wünschen";
 
                 if (currentRoundId !== state.roundId) {
                     currentRoundId = state.roundId;
@@ -39,7 +35,6 @@ pubnub.addListener({
 
                 renderVotingList(state.songs);
                 
-                // Limitschonender lokaler Countdown (berechnet via Systemzeit)
                 clearInterval(localTimerInterval);
                 localTimerInterval = setInterval(() => {
                     const now = Date.now();
@@ -58,19 +53,22 @@ function renderVotingList(songs) {
     list.innerHTML = '';
     
     if (songs.length === 0) {
-        list.innerHTML = '<li style="justify-content: center; color: #888;">Noch keine Songs eingereicht</li>';
+        list.innerHTML = '<li style="justify-content: center; color: #888; text-align:center; padding: 15px;">Noch keine Songs eingereicht</li>';
         return;
     }
 
     songs.forEach(song => {
         const li = document.createElement('li');
-        const displayText = song.link.split("track/")[1] ? "🟢 Track: ..." + song.link.split("track/")[1].substring(0,6) : "🎵 Spotify Link";
         
         li.innerHTML = `
-            <span title="${song.link}">${displayText}</span>
-            <button onclick="vote('${song.id}')" ${hasVoted ? 'disabled' : ''}>
-                Vote (${song.votes})
-            </button>
+            <div style="padding: 5px 0;">
+                ${getSongDisplayHtml(song.link)}
+            </div>
+            <div style="text-align: right; margin-top: 5px;">
+                <button onclick="vote('${song.id}')" ${hasVoted ? 'disabled' : ''} style="width: auto; display: inline-block; padding: 6px 15px;">
+                    Vote (${song.votes})
+                </button>
+            </div>
         `;
         list.appendChild(li);
     });
@@ -80,16 +78,16 @@ function submitSong() {
     if (hasSubmitted && !isVotingDisabledCurrently) return;
     
     const input = document.getElementById('song-input');
-    const link = input.value.trim();
+    const inputVal = input.value.trim();
     
-    if (!link.includes("spotify.com")) {
-        alert("Bitte gib einen gültigen Spotify Link ein!");
+    if (inputVal === "") {
+        alert("Bitte gib einen Songnamen oder Spotify Link ein!");
         return;
     }
 
     pubnub.publish({
         channel: APP_CONFIG.CHANNELS.ACTION,
-        message: { action: 'SUBMIT', link: link }
+        message: { action: 'SUBMIT', link: inputVal }
     });
     
     if (!isVotingDisabledCurrently) {
@@ -100,8 +98,18 @@ function submitSong() {
     input.value = '';
     
     if (isVotingDisabledCurrently) {
-        alert("Song wurde direkt an den DJ geschickt!");
+        alert("Wunsch wurde direkt an den DJ geschickt!");
     }
+}
+
+function vote(songId) {
+    if (hasVoted || isVotingDisabledCurrently) return;
+    pubnub.publish({
+        channel: APP_CONFIG.CHANNELS.ACTION,
+        message: { action: 'VOTE', id: songId }
+    });
+    hasVoted = true;
+}
 }
 
 function vote(songId) {
