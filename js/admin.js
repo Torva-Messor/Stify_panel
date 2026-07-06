@@ -9,7 +9,6 @@ let state = {
 };
 let winnersQueue = [];
 
-// Über globalen Kanal abonnieren
 pubnub.subscribe({ channels: [APP_CONFIG.CHANNELS.ACTION] });
 
 pubnub.addListener({
@@ -20,13 +19,11 @@ pubnub.addListener({
             
             if (data.action === 'SUBMIT') {
                 if (state.votingDisabled) {
-                    // DIREKT-MODUS: Überspringt das Voting komplett
                     if (!winnersQueue.includes(data.link)) {
                         winnersQueue.push(data.link);
                         renderQueue();
                     }
                 } else {
-                    // VOTING-MODUS: Reicht den Song ein, falls Limit noch nicht erreicht
                     if (state.songs.length < APP_CONFIG.MAX_SONGS_IN_VOTING && !state.songs.find(s => s.link === data.link)) {
                         state.songs.push({ id: Date.now().toString(), link: data.link, votes: 0 });
                         stateChanged = true;
@@ -42,7 +39,6 @@ pubnub.addListener({
                 }
             }
 
-            // Bei Änderungen SOFORT pushen, damit User Echtzeit-Feedback haben
             if (stateChanged) {
                 broadcastState();
             }
@@ -50,10 +46,9 @@ pubnub.addListener({
     }
 });
 
-// Haupt-Timer läuft im materialschonenden globalen Takt (z. B. alle 5 Sekunden)
 setInterval(() => {
     if (state.votingDisabled) {
-        broadcastState(); // Nur ein Heartbeat-Sync
+        broadcastState();
         return;
     }
 
@@ -77,7 +72,6 @@ function toggleVoting() {
         btn.style.background = "#1db954";
         settingsCard.style.display = "none";
 
-        // Aktuelle Songs im Voting sofort in die Queue retten
         state.songs.forEach(song => {
             if (!winnersQueue.includes(song.link)) {
                 winnersQueue.push(song.link);
@@ -131,8 +125,12 @@ function renderQueue() {
     winnersQueue.forEach((link, index) => {
         const li = document.createElement('li');
         li.innerHTML = `
-            <span title="${link}">${link}</span>
-            <button class="delete-btn" onclick="removeFromQueue(${index})">Löschen</button>
+            <div style="padding: 5px 0;">
+                ${getSongDisplayHtml(link)}
+            </div>
+            <div style="text-align: right; margin-top: 5px;">
+                <button class="delete-btn" onclick="removeFromQueue(${index})" style="width: auto; display: inline-block; padding: 6px 15px;">Löschen</button>
+            </div>
         `;
         list.appendChild(li);
     });
@@ -159,6 +157,4 @@ function shortenTime() {
     }
 }
 
-// Start beim Laden
 startNewRound();
-
