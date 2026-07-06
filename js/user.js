@@ -110,6 +110,14 @@ function vote(songId) {
     });
     hasVoted = true;
 }
+function vote(songId) {
+    if (hasVoted || isVotingDisabledCurrently) return;
+    pubnub.publish({
+        channel: APP_CONFIG.CHANNELS.ACTION,
+        message: { action: 'VOTE', id: songId }
+    });
+    hasVoted = true;
+}
 }
 
 function vote(songId) {
