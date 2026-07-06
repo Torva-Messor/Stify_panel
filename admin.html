@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.2.min.js"></script>
+</head>
+<body>
+    <div id="banner" style="background: #00bcd4;">Admin Kontrollzentrum</div>
+    
+    <div class="card" style="border: 2px solid #ff5722;">
+        <h3>Modus-Steuerung</h3>
+        <button id="toggle-voting-btn" onclick="toggleVoting()" style="background: #e91429; color: white; font-size: 1.1rem;">
+            Voting DEAKTIVIEREN (Direkt-Modus an)
+        </button>
+    </div>
+
+    <div class="card">
+        <h3>Genre steuern</h3>
+        <input type="text" id="genre-input" value="City Pop">
+        <button onclick="updateGenre()">Genre aktualisieren</button>
+    </div>
+
+    <div id="voting-settings-card" class="card">
+        <h3>Voting-Einstellungen</h3>
+        <label for="duration-select">Rundenzeit für kommende Runden:</label>
+        <select id="duration-select" onchange="updateDuration()">
+            <option value="300">5 Minuten (300s)</option>
+            <option value="120" selected>2 Minuten (120s)</option>
+            <option value="60">1 Minute (60s)</option>
+        </select>
+        <button onclick="shortenTime()" style="background: #ff9800; color: #000; margin-top: 12px;">Aktuelle Runde verkürzen (10s verbleibend)</button>
+    </div>
+
+    <div class="card">
+        <h3>Live-Status</h3>
+        <div id="admin-status-text">Verbleibende Zeit: <strong id="admin-time">--</strong>s</div>
+        <div id="admin-song-count-text">Eingereichte Songs im Voting: <strong id="admin-song-count">0</strong></div>
+    </div>
+
+    <div class="card">
+        <h3>Warteschlange (Queue für Spotify)</h3>
+        <ul id="queue-list"></ul>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
+
