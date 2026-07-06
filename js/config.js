@@ -1,8 +1,8 @@
 // js/config.js
 
 // 1. PUBNUB API KEYS (Jetzt erfolgreich für dich eingetragen!)
-const PUBNUB_PUBLISH_KEY = "pub-c-f5b11d3c-ddfe-4dfc-963e-6fae738aeb03";
-const PUBNUB_SUBSCRIBE_KEY = "sub-c-6fdfc9e3-91b8-4f79-b62a-6fd9fc69eff7";
+const PUBNUB_PUBLISH_KEY = "pub-c-83becc1c-68f4-47bc-8d66-c2c6fd516421";
+const PUBNUB_SUBSCRIBE_KEY = "sub-c-2f78ee6d-c74f-499a-8f00-7ba94823ae4a";
 
 // 2. GLOBALE EINSTELLUNGEN
 const APP_CONFIG = {
