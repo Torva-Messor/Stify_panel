@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Voting</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.2.min.js"></script>
+</head>
+<body>
+    <div id="banner">Was spielt gerade: <span id="genre-display">Wird geladen...</span></div>
+    
+    <div class="card">
+        <h3 id="submit-title">Song vorschlagen</h3>
+        <input type="text" id="song-input" placeholder="Spotify Link einfügen...">
+        <button id="submit-btn" onclick="submitSong()">Vorschlag einreichen</button>
+    </div>
+
+    <div class="card">
+        <h3 id="list-title">Aktuelle Auswahl</h3>
+        <div id="time-badge-container" class="time-badge">Noch <span id="time-display">--</span> Sek.</div>
+        <ul id="voting-list"></ul>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/user.js"></script>
+</body>
+</html>
+
