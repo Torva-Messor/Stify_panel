@@ -2,8 +2,8 @@
 
 // 1. PUBNUB API KEYS
 const pubnub = new PubNub({
-    publishKey: "pub-c-83becc1c-68f4-47bc-8d66-c2c6fd516421",
-    subscribeKey: "sub-c-2f78ee6d-c74f-499a-8f00-7ba94823ae4a",
+    publishKey: "pub-c-b336df9e-28eb-40aa-b715-cc13f8603976",
+    subscribeKey: "sub-c-adf15c8d-cd7f-4217-872f-fc5006ce742e",
     userId: "stify_panel_user_" + Math.random().toString(36).substr(2, 9) 
 });
 
